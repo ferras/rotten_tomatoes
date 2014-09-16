@@ -11,6 +11,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "DetailViewController.h"
 #import "MBProgressHUD.h"
+#import "AJNotificationView.h"
 
 @interface MoviesViewController () {
     UIRefreshControl *refreshControl;
@@ -79,12 +80,12 @@
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [refreshControl endRefreshing];
         } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network Error"
-                                                            message:@"Data from Rotten Tomatoes could not be retreived, please try again"
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            
+            [AJNotificationView showNoticeInView:[[[UIApplication sharedApplication] delegate] window]
+                                            type:AJNotificationTypeBlue
+                                           title:@"Network Error"
+                                 linedBackground:AJLinedBackgroundTypeAnimated
+                                       hideAfter:2.5f];
         }
     }];
     NSLog(@"reloading table");
