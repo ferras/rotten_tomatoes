@@ -10,6 +10,7 @@
 #import "MovieCell.h"
 #import "UIImageView+AFNetworking.h"
 #import "DetailViewController.h"
+#import "MBProgressHUD.h"
 
 @interface MoviesViewController () {
     UIRefreshControl *refreshControl;
@@ -67,7 +68,7 @@
 
 - (void)refreshTable {
     NSString *url = @"http://api.rottentomatoes.com/api/public/v1.0/lists/movies/box_office.json?apikey=787kzzvjz7k377n3357pxsdv&country=us";
-    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError * connectionError) {
         if (!connectionError) {
@@ -75,9 +76,15 @@
             self.movies = object[@"movies"];
             [self.tableView reloadData];
             NSLog(@"movies: %@", self.movies);
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
             [refreshControl endRefreshing];
         } else {
-            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network Error"
+                                                            message:@"Data from Rotten Tomatoes could not be retreived, please try again"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
         }
     }];
     NSLog(@"reloading table");
